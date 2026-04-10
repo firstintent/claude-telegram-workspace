@@ -24,7 +24,7 @@
       └── ...
 ```
 
-每个工作区独立目录、独立 Bot Token、独立 `settings.json` 与 `access.json`，互不干扰。
+Claude Code 官方支持通过 `TELEGRAM_STATE_DIR` 环境变量为每个工作区指定独立的 Telegram 配置目录，使每个工作区拥有独立 Bot Token、独立 `settings.json` 与 `access.json`，互不干扰。
 
 ## 特性
 
