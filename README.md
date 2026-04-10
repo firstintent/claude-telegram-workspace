@@ -1,6 +1,6 @@
 # Claude Code 多 Bot 工作区模板
 
-在同一台机器上运行多个 Telegram Bot，每个 Bot 对应一个完全隔离的工作区（workspace）。
+基于 Anthropic 官方 [Telegram 插件](https://github.com/anthropics/claude-plugins-official/blob/main/external_plugins/telegram/README.md) 的推荐模式，在同一台机器上运行多个 Telegram Bot，每个 Bot 对应一个完全隔离的工作区（workspace）。
 
 ## 架构
 
@@ -84,3 +84,7 @@ claude --channels plugin:telegram@claude-plugins-official
 | `.claude/settings.json` | 工具权限白名单与 deny 规则 |
 | `.claude/channels/telegram/access.json` | Telegram 用户访问控制 |
 | `PROJECTS.md` | 子项目索引 |
+
+## 参考文档
+
+- [Telegram 插件官方文档](https://github.com/anthropics/claude-plugins-official/blob/main/external_plugins/telegram/README.md)
