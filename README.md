@@ -40,6 +40,16 @@ git clone https://github.com/firstintent/claude-telegram-workspace.git <workspac
 cd <workspace-name>
 ```
 
+修改 `.claude/settings.json` 中的 `TELEGRAM_STATE_DIR` 为当前工作区的实际路径：
+
+```json
+{
+  "env": {
+    "TELEGRAM_STATE_DIR": "/path/to/<workspace-name>/.claude/channels/telegram"
+  }
+}
+```
+
 配置 Bot Token（参考 [Telegram 插件文档](https://github.com/anthropics/claude-plugins-official/blob/main/external_plugins/telegram/README.md)），然后启动：
 
 ```bash
