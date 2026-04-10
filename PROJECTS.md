@@ -2,11 +2,11 @@
 
 | 项目目录 | 技术栈 | 说明 |
 |----------|--------|------|
-| `web3-research/` | Markdown | 预测市场行业调研报告（Hyperliquid、Polymarket 等），纯文档，不含可运行代码 |
+| `research-reports/` | Markdown | 研究报告，纯文档，不含可运行代码 |
 
 ---
 
 ## 不清楚时的提问模板
 
 > 「请问你指的是哪个项目？
-> 1. web3-research（行业调研报告）」
+> 1. research-reports（研究报告）」
