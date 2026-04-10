@@ -36,7 +36,15 @@
 ### 前置依赖
 
 ```bash
+# 安装 bun
 curl -fsSL https://bun.sh/install | bash
+
+# 安装 Telegram 插件（一次性，全局生效）
+claude
+# /plugin install telegram@claude-plugins-official
+# /reload-plugins
+
+# clone 模板
 git clone https://github.com/firstintent/claude-telegram-workspace.git <workspace-name>
 ```
 
