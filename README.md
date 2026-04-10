@@ -50,7 +50,14 @@ cd <workspace-name>
 }
 ```
 
-配置 Bot Token（参考 [Telegram 插件文档](https://github.com/anthropics/claude-plugins-official/blob/main/external_plugins/telegram/README.md)），然后启动：
+直接写入 Bot Token（**不要使用 `/telegram:configure`**，该技能写死全局路径，多 Bot 场景下会互相覆盖）：
+
+```bash
+mkdir -p .claude/channels/telegram
+echo "TELEGRAM_BOT_TOKEN=<your-token>" > .claude/channels/telegram/.env
+```
+
+启动：
 
 ```bash
 tmux new -s <workspace-name>
