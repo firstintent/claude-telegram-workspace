@@ -36,8 +36,8 @@
 ### 新建一个工作区
 
 ```bash
-cp -r /path/to/this-template /path/to/new-workspace
-cd /path/to/new-workspace
+git clone https://github.com/firstintent/claude-telegram-workspace.git <workspace-name>
+cd <workspace-name>
 ```
 
 配置 Bot Token（参考 [Telegram 插件文档](https://github.com/anthropics/claude-plugins-official/blob/main/external_plugins/telegram/README.md)），然后启动：
