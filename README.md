@@ -36,32 +36,26 @@
 ### 新建一个工作区
 
 ```bash
+# 1. 安装依赖
+curl -fsSL https://bun.sh/install | bash
+
+# 2. clone 模板
 git clone https://github.com/firstintent/claude-telegram-workspace.git <workspace-name>
 cd <workspace-name>
-```
 
-修改 `.claude/settings.json` 中的 `TELEGRAM_STATE_DIR` 为当前工作区的实际路径：
-
-```json
-{
-  "env": {
-    "TELEGRAM_STATE_DIR": "/path/to/<workspace-name>/.claude/channels/telegram"
-  }
-}
-```
-
-直接写入 Bot Token（**不要使用 `/telegram:configure`**，该技能写死全局路径，多 Bot 场景下会互相覆盖）：
-
-```bash
+# 3. 写入 Bot Token（勿用 /telegram:configure，多 bot 下会覆盖全局路径）
 mkdir -p .claude/channels/telegram
 echo "TELEGRAM_BOT_TOKEN=<your-token>" > .claude/channels/telegram/.env
-```
 
-启动：
+# 4. 修改 settings.json 中的 TELEGRAM_STATE_DIR 为实际路径
+#    "TELEGRAM_STATE_DIR": "/path/to/<workspace-name>/.claude/channels/telegram"
 
-```bash
+# 5. 启动，在 Claude Code 内安装插件并重载
 tmux new -s <workspace-name>
 claude --channels plugin:telegram@claude-plugins-official
+# 进入后执行：
+# /plugin install telegram@claude-plugins-official
+# /reload-plugins
 ```
 
 ### 同时运行多个工作区
