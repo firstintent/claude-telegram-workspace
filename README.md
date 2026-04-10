@@ -6,17 +6,21 @@
 
 ```
 机器
- ├── workspace-a/          ← Bot A (token-a)   tmux: ws-a
+ ├── workspace-a/                          ← Bot A (token-a)   tmux: ws-a
  │    ├── CLAUDE.md
  │    ├── .claude/
  │    │    ├── settings.json
- │    │    └── channels/telegram/access.json
+ │    │    └── channels/telegram/          ← 已提交到 git（目录结构）
+ │    │         ├── .gitkeep
+ │    │         ├── .env                   ← gitignore（Bot Token）
+ │    │         ├── access.json            ← gitignore（用户访问控制，运行时生成）
+ │    │         └── approved/              ← gitignore（配对通知，运行时生成）
  │    └── <子项目>/
  │
- ├── workspace-b/          ← Bot B (token-b)   tmux: ws-b
+ ├── workspace-b/                          ← Bot B (token-b)   tmux: ws-b
  │    └── ...
  │
- └── workspace-c/          ← Bot C (token-c)   tmux: ws-c
+ └── workspace-c/                          ← Bot C (token-c)   tmux: ws-c
       └── ...
 ```
 
@@ -54,7 +58,7 @@ git clone https://github.com/firstintent/claude-telegram-workspace.git <workspac
 cd <workspace-name>
 
 # 写入 Bot Token（勿用 /telegram:configure，多 bot 下会覆盖全局路径）
-mkdir -p .claude/channels/telegram
+# .claude/channels/telegram/ 目录已随模板提交，无需手动创建
 echo "TELEGRAM_BOT_TOKEN=<your-token>" > .claude/channels/telegram/.env
 
 # 修改 settings.json 中的 TELEGRAM_STATE_DIR 为实际路径
@@ -66,6 +70,24 @@ claude --channels plugin:telegram@claude-plugins-official
 # /plugin install telegram@claude-plugins-official
 # /reload-plugins
 ```
+
+### 首次配对 Telegram 用户
+
+Bot 启动后，在 Telegram 向 Bot 发送任意消息，Bot 会返回一个 6 位配对码（如 `7af7a8`）。
+
+> **注意**：`/telegram:access pair <code>` 读取的是全局路径 `~/.claude/channels/telegram/`，**不感知** `TELEGRAM_STATE_DIR`，在项目级部署中会报"No pending entry"。请改用以下方式配对：
+
+在终端 Claude 会话中直接说：
+
+```
+手动配对 Telegram 用户，code: <6位码>
+```
+
+Claude 会：
+1. 读取 `.claude/channels/telegram/access.json` 中的 pending 条目
+2. 将 `senderId` 加入 `allowFrom`，清除 pending
+3. 创建 `.claude/channels/telegram/approved/<senderId>` 文件
+4. Channel server 轮询到后自动向用户发送"you're in"通知
 
 ### 同时运行多个工作区
 

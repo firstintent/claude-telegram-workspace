@@ -1,5 +1,8 @@
-# Telegram 运行时数据（含 access.json、消息记录等）
-.claude/channels/
+# Telegram 敏感运行时数据
+.claude/channels/telegram/.env
+.claude/channels/telegram/access.json
+.claude/channels/telegram/approved/*
+!.claude/channels/telegram/approved/.gitkeep
 
 # 环境变量
 .env
