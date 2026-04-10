@@ -1,7 +1,6 @@
-# Claude Code Telegram Bot 工作区模板
+# Claude Code 多 Bot 工作区模板
 
-一个 Bot 对应一个独立工作区（workspace）的 Claude Code Telegram 接入模板。  
-通过复制此模板，可在**同一台机器上同时运行多个工作区、多个 Bot**，彼此完全隔离。
+在同一台机器上运行多个 Telegram Bot，每个 Bot 对应一个完全隔离的工作区（workspace）。
 
 ## 架构
 
