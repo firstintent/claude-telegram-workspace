@@ -1,0 +1,9 @@
+# Telegram 运行时数据（含 access.json、消息记录等）
+.claude/channels/
+
+# 环境变量
+.env
+*.env
+
+# 本地临时文件
+*.local
