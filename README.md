@@ -4,29 +4,20 @@
 
 ## 架构
 
-### 单工作区
-
-```
-Telegram Bot
-     │
-     ▼
-Claude Code (--channels)   ← 在工作区目录下启动
-     │
-     ├── CLAUDE.md                          # 行为规范 & 安全规则
-     ├── .claude/
-     │   ├── settings.json                  # 权限白名单 / deny 规则
-     │   └── channels/telegram/
-     │       └── access.json                # owner & 群员访问控制
-     └── <子项目>/                          # 实际业务代码 / 文档
-```
-
-### 多工作区（同一台机器）
-
 ```
 机器
- ├── workspace-a/          Bot A (token-a)   tmux: ws-a
- ├── workspace-b/          Bot B (token-b)   tmux: ws-b
- └── workspace-c/          Bot C (token-c)   tmux: ws-c
+ ├── workspace-a/          ← Bot A (token-a)   tmux: ws-a
+ │    ├── CLAUDE.md
+ │    ├── .claude/
+ │    │    ├── settings.json
+ │    │    └── channels/telegram/access.json
+ │    └── <子项目>/
+ │
+ ├── workspace-b/          ← Bot B (token-b)   tmux: ws-b
+ │    └── ...
+ │
+ └── workspace-c/          ← Bot C (token-c)   tmux: ws-c
+      └── ...
 ```
 
 每个工作区独立目录、独立 Bot Token、独立 `settings.json` 与 `access.json`，互不干扰。
