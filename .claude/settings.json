@@ -43,8 +43,6 @@
       "Bash(chmod *)",
       "Bash(curl * | *)",
       "Bash(wget * | *)",
-      "Write(./CLAUDE.md)",
-      "Edit(./CLAUDE.md)",
       "Write(./.claude/settings.json)",
       "Edit(./.claude/settings.json)",
       "Write(./.claude/settings.local.json)",
