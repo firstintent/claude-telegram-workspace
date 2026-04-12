@@ -57,19 +57,18 @@ git clone https://github.com/firstintent/claude-telegram-workspace.git <workspac
 ```bash
 cd <workspace-name>
 
-# 写入 Bot Token（勿用 /telegram:configure，多 bot 下会覆盖全局路径）
-# .claude/channels/telegram/ 目录已随模板提交，无需手动创建
-echo "TELEGRAM_BOT_TOKEN=<your-token>" > .claude/channels/telegram/.env
+# 一步到位：提示输入 token，生成 .env 与 .claude/settings.local.json（机器相关路径）
+bash .claude/setup.sh
 
-# 修改 settings.json 中的 TELEGRAM_STATE_DIR 为实际路径
-#   "TELEGRAM_STATE_DIR": "/path/to/<workspace-name>/.claude/channels/telegram"
-
-# 启动，进入后安装插件并重载
+# 启动
 tmux new -s <workspace-name>
 claude --channels plugin:telegram@claude-plugins-official
+# 首次需在会话内：
 # /plugin install telegram@claude-plugins-official
 # /reload-plugins
 ```
+
+> 机器相关的 `TELEGRAM_STATE_DIR` 落在 `.claude/settings.local.json`（被 `*.local` gitignore），tracked 的 `settings.json` 只承载共享的权限与 deny 规则，不再携带绝对路径。
 
 ### 首次配对 Telegram 用户
 
@@ -102,7 +101,9 @@ claude --channels plugin:telegram@claude-plugins-official
 | 文件 | 用途 |
 |------|------|
 | `CLAUDE.md` | Claude 行为规范、安全规则、项目说明 |
-| `.claude/settings.json` | 工具权限白名单与 deny 规则 |
+| `.claude/settings.json` | 共享的工具权限白名单与 deny 规则（tracked） |
+| `.claude/settings.local.json` | 机器相关 env（`TELEGRAM_STATE_DIR` 等），`.claude/setup.sh` 生成，gitignored |
+| `.claude/setup.sh` | 一次性初始化脚本 |
 | `.claude/channels/telegram/access.json` | Telegram 用户访问控制 |
 | `PROJECTS.md` | 子项目索引 |
 

@@ -1,7 +1,4 @@
 {
-  "env": {
-    "TELEGRAM_STATE_DIR": "/home/ubuntu/wxf/.claude/channels/telegram"
-  },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
     "telegram@claude-plugins-official": true
