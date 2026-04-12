@@ -3,6 +3,7 @@
 .claude/channels/telegram/access.json
 .claude/channels/telegram/approved/*
 !.claude/channels/telegram/approved/.gitkeep
+.claude/channels/telegram/bot.pid
 
 # 环境变量
 .env

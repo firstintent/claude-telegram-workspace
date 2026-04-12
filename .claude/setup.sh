@@ -36,5 +36,5 @@ cat <<EOF
 下一步：
   tmux new -s $(basename "$WORKSPACE_DIR")
   claude --channels plugin:telegram@claude-plugins-official
-  # 在 Telegram 向 Bot 发任意消息拿 6 位配对码，终端输入 'pair <码>'
+  # 在 Telegram 向 Bot 发任意消息拿 6 位配对码，终端输入 '/pair <码>'
 EOF

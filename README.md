@@ -72,17 +72,11 @@ claude --channels plugin:telegram@claude-plugins-official
 
 ### 首次配对 Telegram 用户
 
-Bot 启动后，在 Telegram 向 Bot 发送任意消息，Bot 会返回一个 6 位配对码（如 `7af7a8`）。
-
-> **注意**：`/telegram:access pair <code>` 读取的是全局路径 `~/.claude/channels/telegram/`，**不感知** `TELEGRAM_STATE_DIR`，在项目级部署中会报"No pending entry"。
->
-> **正确做法**：在终端 Claude 会话中直接输入：
+Bot 启动后，在 Telegram 向 Bot 发送任意消息拿到 6 位配对码，终端 Claude 会话中输入：
 
 ```
-pair <6位码>
+/pair <6位码>
 ```
-
-> `CLAUDE.md` 中已定义配对规程，Claude 会自动对项目路径执行配对，无需任何额外操作。
 
 ### 同时运行多个工作区
 

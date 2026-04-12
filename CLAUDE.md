@@ -24,7 +24,7 @@ Randd 研发团队助手：调研报告 | 项目问答 | Harness Engineering
 
 ## Telegram 配对
 
-触发词："pair \<code\>" 或 "/telegram:access pair \<code\>" — 先 Read `.claude/telegram-pairing.md` 再执行
+用户使用 `/pair <code>`（项目级 slash，见 `.claude/commands/pair.md`）。不要调用官方 `/telegram:access` skill —— 它读全局 `~/.claude/channels/`，与本工作区 `TELEGRAM_STATE_DIR` 不匹配。
 
 ## Telegram 会话
 
