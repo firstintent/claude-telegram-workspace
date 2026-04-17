@@ -41,9 +41,7 @@
       "Bash(curl * | *)",
       "Bash(wget * | *)",
       "Write(./.claude/settings.json)",
-      "Edit(./.claude/settings.json)",
-      "Write(./.claude/settings.local.json)",
-      "Edit(./.claude/settings.local.json)"
+      "Edit(./.claude/settings.json)"
     ]
   }
 }
