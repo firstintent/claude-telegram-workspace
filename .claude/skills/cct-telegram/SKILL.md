@@ -71,7 +71,8 @@ claude --channels plugin:telegram@claude-plugins-official
 
 **步骤 4 — 首次配对**
 
-在 Telegram 向 Bot 发任意消息，终端会输出 6 位配对码，按下方「场景二」完成配对。
+在 Telegram 向 Bot 发任意消息，终端会输出 6 位配对码。用户在 Claude 会话中输入
+`pair <6位码>` 后，直接执行场景二的配对流程，无需额外提示。
 
 ### 故障排查
 

@@ -69,13 +69,13 @@ claude --channels plugin:telegram@claude-plugins-official
 
 ### 首次配对 Telegram 用户
 
-Bot 启动后，在 Telegram 向 Bot 发送任意消息拿到 6 位配对码，然后告诉 Claude：
+Bot 启动后，在 Telegram 向 Bot 发送任意消息拿到 6 位配对码，在 Claude 会话中直接输入：
 
 ```
 pair <6位码>
 ```
 
-`cct-telegram` skill 会自动完成配对，无需手动编辑 `access.json`。
+Claude 会调用 `cct-telegram` skill 完成配对——读取 `access.json`、写入 `allowFrom`、创建 approved 标记，全程自动执行，无需手动操作任何文件。
 
 ### 同时运行多个工作区
 
