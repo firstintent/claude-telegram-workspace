@@ -23,6 +23,8 @@
       "Skill(update-config)",
       "Skill(telegram:access)",
       "Skill(claude-md-management:revise-claude-md)",
+      "Skill(cct-telegram)",
+      "Skill(cct-slash)",
       "Read(./**)",
       "Write(./**)",
       "Edit(./**)",
@@ -32,7 +34,6 @@
       "Read(./.claude/channels/**)"
     ],
     "deny": [
-      "Bash(rm *)",
       "Bash(rm -rf*)",
       "Bash(git reset --hard*)",
       "Bash(git push --force*)",

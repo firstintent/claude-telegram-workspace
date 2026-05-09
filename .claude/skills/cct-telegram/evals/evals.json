@@ -1,0 +1,23 @@
+{
+  "skill_name": "cct-telegram",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我刚克隆了 claude-telegram-workspace 模板到 /home/ubuntu/workplace/my-bot，想接入 Telegram。已经从 BotFather 拿到了 token，接下来怎么做？TELEGRAM_STATE_DIR 应该放在哪里，会不会影响我机器上其他工作区？",
+      "expected_output": "Claude 应该：1) 明确说明 TELEGRAM_STATE_DIR 写入当前工作区的 .claude/settings.local.json（不修改全局配置），2) 指示运行 bash .claude/skills/cct-telegram/scripts/setup.sh 完成初始化，3) 说明 settings.local.json 是 gitignored，不影响其他工作区",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我有两个工作区 ws-a 和 ws-b，每个都要跑一个不同的 Telegram Bot。请帮我梳理一下配置步骤，特别是怎么保证两个工作区的 token 和配置不互相干扰？",
+      "expected_output": "Claude 应该：1) 解释每个工作区独立运行 setup.sh，2) 说明 TELEGRAM_STATE_DIR 指向各自的 .claude/channels/telegram/，3) 强调 settings.local.json（而非全局 ~/.claude/settings.json）是隔离的关键，4) 提到每个工作区对应独立 tmux session",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "setup telegram for my workspace. I'm in /home/ubuntu/projects/randd-bot and I've already got a bot token from BotFather. The telegram plugin is already installed globally.",
+      "expected_output": "Claude should: 1) Tell the user to run bash .claude/skills/cct-telegram/scripts/setup.sh from workspace root, 2) Explain that TELEGRAM_STATE_DIR goes into .claude/settings.local.json (NOT global ~/.claude/settings.json), 3) Walk through tmux startup and /pair pairing",
+      "files": []
+    }
+  ]
+}
