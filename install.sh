@@ -33,10 +33,11 @@ mkdir -p "$TARGET/.claude/channels/telegram/approved"
 [ -f "$TARGET/.claude/channels/telegram/.gitkeep" ]          || touch "$TARGET/.claude/channels/telegram/.gitkeep"
 [ -f "$TARGET/.claude/channels/telegram/approved/.gitkeep" ] || touch "$TARGET/.claude/channels/telegram/approved/.gitkeep"
 
-echo "→ Merging settings.json..."
-SETTINGS="$TARGET/.claude/settings.json"
+echo "→ Merging settings.local.json..."
+SETTINGS="$TARGET/.claude/settings.local.json"
 mkdir -p "$TARGET/.claude"
 
+# 仅写入 settings.local.json（gitignored）。绝不修改用户项目的 settings.json。
 if [ ! -f "$SETTINGS" ]; then
     cat > "$SETTINGS" <<EOF
 {
@@ -48,7 +49,7 @@ if [ ! -f "$SETTINGS" ]; then
   }
 }
 EOF
-    echo "  Created .claude/settings.json"
+    echo "  Created .claude/settings.local.json"
 elif command -v jq &>/dev/null; then
     MERGED=$(jq -n \
         --argjson existing "$(cat "$SETTINGS")" \
@@ -57,9 +58,9 @@ elif command -v jq &>/dev/null; then
          | .enabledPlugins["telegram@claude-plugins-official"] = true
          | .permissions.allow = (((.permissions.allow // []) + $perms) | unique)')
     echo "$MERGED" > "$SETTINGS"
-    echo "  Merged into existing .claude/settings.json"
+    echo "  Merged into existing .claude/settings.local.json"
 else
-    echo "  ⚠ jq not found — please add manually to .claude/settings.json:"
+    echo "  ⚠ jq not found — please add manually to .claude/settings.local.json:"
     echo '    "enabledPlugins": { "telegram@claude-plugins-official": true }'
     echo "    permissions.allow: mcp__plugin_telegram_telegram__reply/react/edit_message/download_attachment"
     echo "                       Skill(cct-telegram) Skill(cct-slash) Skill(cct-snapshot)"

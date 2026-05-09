@@ -11,3 +11,6 @@
 
 # 本地临时文件
 *.local
+
+# 本地设置（机器/账户专属，不入库）
+.claude/settings.local.json

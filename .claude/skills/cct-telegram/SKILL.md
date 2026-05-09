@@ -19,8 +19,8 @@ allowed-tools: [Bash, Read, Write]
 
 ### 核心原则
 
-`TELEGRAM_STATE_DIR` 必须指向**当前工作区**的 `.claude/channels/telegram/` 目录，写入
-`.claude/settings.local.json`（gitignored），**绝不修改全局 `~/.claude/settings.json`**。
+`TELEGRAM_STATE_DIR` 必须指向**当前工作区**的 `.claude/channels/telegram/` 目录，**只合并写入** `.claude/settings.local.json`（gitignored）。
+**绝不读写**用户项目的 `.claude/settings.json`，也**绝不修改全局 `~/.claude/settings.json`**。
 同一台机器可并行运行多个工作区，每个工作区独立 Bot Token 和 `access.json`，互不干扰。
 
 **前提**：`telegram@claude-plugins-official` 已全局安装（`/plugin install telegram@claude-plugins-official` + `/reload-plugins`）。不确定时询问用户，已安装则跳过。
@@ -45,18 +45,18 @@ install -m 600 /dev/null .claude/channels/telegram/.env
 echo "TELEGRAM_BOT_TOKEN=<token>" > .claude/channels/telegram/.env
 ```
 
-3. 写入 `settings.local.json`：
+3. 合并写入 `settings.local.json`（保留已有的 `enabledPlugins`、`permissions` 等键，**绝不**用 `cat >` 覆盖；**也绝不**写 `.claude/settings.json`）：
 ```bash
-cat > .claude/settings.local.json <<EOF
-{
-  "env": {
-    "TELEGRAM_STATE_DIR": "<pwd结果>/.claude/channels/telegram"
-  }
-}
-EOF
+LOCAL=.claude/settings.local.json
+DIR="$(pwd)/.claude/channels/telegram"
+if [ -f "$LOCAL" ]; then
+  jq --arg dir "$DIR" '.env.TELEGRAM_STATE_DIR = $dir' "$LOCAL" > "$LOCAL.tmp" && mv "$LOCAL.tmp" "$LOCAL"
+else
+  jq -n --arg dir "$DIR" '{env: {TELEGRAM_STATE_DIR: $dir}}' > "$LOCAL"
+fi
 ```
 
-4. 验证两个文件内容正确。
+4. 验证两个文件内容正确（`cat .claude/channels/telegram/.env` 与 `cat .claude/settings.local.json`）。
 
 **步骤 3 — 提示重启**
 
