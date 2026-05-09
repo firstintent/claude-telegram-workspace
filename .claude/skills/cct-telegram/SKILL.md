@@ -58,24 +58,18 @@ EOF
 
 4. 验证两个文件内容正确。
 
-**步骤 3 — 自动启动 Bot**
+**步骤 3 — 提示重启**
 
-检查是否已有 Bot 在运行：
-```bash
-tmux ls 2>/dev/null
-```
+配置已写入 `settings.local.json`，但 `TELEGRAM_STATE_DIR` 需要在 Claude 启动时读取才能生效。
 
-取工作区目录名作为 session 名（如 `claude-telegram-workspace`），若对应 session 不存在则创建：
-```bash
-tmux new-session -d -s <session名> && tmux send-keys -t <session名> "cd <工作区路径> && claude --channels plugin:telegram@claude-plugins-official" Enter
-```
+告知用户：
+> 配置完成。请输入 `/exit` 退出当前会话，然后重启：
+> `claude --channels plugin:telegram@claude-plugins-official`
+> 重启后 Bot 即可接收消息，请去 Telegram 向 Bot 发任意消息获取配对码。
 
 **步骤 4 — 引导配对**
 
-Bot 启动后，告知用户：
-> Bot 已在后台启动。请在 Telegram 向 Bot 发送任意消息，等待片刻后回来把 **6 位配对码**告诉我（输入 `pair <码>`）。
-
-然后等待用户输入配对码，触发场景二。
+用户重启并收到配对码后，触发场景二。
 
 ### 故障排查
 

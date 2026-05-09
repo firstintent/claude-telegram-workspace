@@ -58,15 +58,18 @@ cd /path/to/your-project
 # 2. 运行安装脚本（复制 skills + 合并 settings.json + 更新 .gitignore）
 bash <(curl -sSL https://raw.githubusercontent.com/firstintent/claude-telegram-workspace/main/install.sh)
 
-# 3. 在 tmux 里启动 Claude
+# 3. 在 tmux 里启动 Claude（带 Telegram 插件参数）
 tmux new -s <project-name>
-claude
+claude --channels plugin:telegram@claude-plugins-official
 
 # 4. 在 Claude 会话中配置 Telegram
 #    告诉 Claude：帮我接入 Telegram，token 是 <BotFather给的token>
-#    Claude 会自动写入配置并启动 Bot
+#    Claude 会写入配置，然后提示你重启
 
-# 5. 去 Telegram 向 Bot 发任意消息，等片刻收到 6 位配对码
+# 5. 退出 Claude（/exit），重启使 TELEGRAM_STATE_DIR 生效：
+#    claude --channels plugin:telegram@claude-plugins-official
+
+# 6. 去 Telegram 向 Bot 发任意消息，等片刻收到 6 位配对码
 #    回到 Claude 会话输入：
 #    pair <6位码>
 ```
@@ -84,15 +87,18 @@ claude
 git clone https://github.com/firstintent/claude-telegram-workspace.git <workspace-name>
 cd <workspace-name>
 
-# 2. 在 tmux 里启动 Claude
+# 2. 在 tmux 里启动 Claude（带 Telegram 插件参数）
 tmux new -s <workspace-name>
-claude
+claude --channels plugin:telegram@claude-plugins-official
 
 # 3. 在 Claude 会话中配置 Telegram
 #    告诉 Claude：帮我接入 Telegram，token 是 <BotFather给的token>
-#    Claude 会自动写入配置并启动 Bot
+#    Claude 会写入配置，然后提示你重启
 
-# 4. 去 Telegram 向 Bot 发任意消息，等片刻收到 6 位配对码
+# 4. 退出 Claude（/exit），重启使 TELEGRAM_STATE_DIR 生效：
+#    claude --channels plugin:telegram@claude-plugins-official
+
+# 5. 去 Telegram 向 Bot 发任意消息，等片刻收到 6 位配对码
 #    回到 Claude 会话输入：
 #    pair <6位码>
 ```
