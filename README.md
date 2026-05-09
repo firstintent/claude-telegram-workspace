@@ -2,26 +2,38 @@
 
 基于 Anthropic 官方 [Telegram 插件](https://github.com/anthropics/claude-plugins-official/blob/main/external_plugins/telegram/README.md) 的推荐模式，在同一台机器上运行多个 Telegram Bot，每个 Bot 对应一个完全隔离的工作区（workspace）。
 
-## 特性
+## 特性与用法
 
 ### 🤖 多工作区独立 Bot
-每个工作区绑定独立的 Bot Token，通过 `TELEGRAM_STATE_DIR` 隔离，同一台机器可并行运行多个 Bot 互不干扰。
-解决了 Claude Code 官方 Telegram 插件全局单 Bot 的限制，是当前的最佳实践。
+每个工作区绑定独立的 Bot Token，通过 `TELEGRAM_STATE_DIR` 隔离，同一台机器可并行运行多个 Bot 互不干扰。解决了 Claude Code 官方 Telegram 插件全局单 Bot 的限制，是当前的最佳实践。
+
+```bash
+# 同机并行多个工作区，每个 tmux session 一份独立 Bot
+tmux new -s ws-a   # workspace-a/  →  Bot A
+tmux new -s ws-b   # workspace-b/  →  Bot B
+```
 
 ### ⌨️ Telegram 内执行 Claude Code 命令
 通过 `cct-slash` skill，可直接在 Telegram 消息中让本机工作区 session 执行 Claude Code slash 命令。注意：Telegram 会把以 `/` 开头的消息当作 bot 命令拦截，所以**要在前面加自然语言**：
 
 ```
-执行 /clear
-执行 /compact
-执行 /review
-帮我跑一下 /memory
+你（Telegram）→  执行 /clear
+你（Telegram）→  帮我跑一下 /compact
+你（Telegram）→  在当前 session 执行 /review
 ```
 
-无需切换终端，随时随地控制自己的工作区。
+Bot 会回复 `✓ 已向 <session> 发送 /clear`，本机 tmux pane 内 Claude 立即执行该命令。无需切换终端，随时随地控制自己的工作区。
 
 ### 📸 远程截图当前 tmux pane
-通过 `cct-snapshot` skill，让 Telegram bot 把当前 tmux pane 截图（JetBrains Mono + ANSI 颜色 + 中文）发回来，秒看 Claude 当下在做什么。说一句"截图""看一眼现在的屏幕"即可。两个 skill 都强制要求 Claude 本身跑在 tmux 内，否则拒绝。
+通过 `cct-snapshot` skill，让 Telegram bot 把当前 tmux pane 截图（JetBrains Mono + ANSI 颜色 + 中文）发回来，秒看 Claude 当下在做什么：
+
+```
+你（Telegram）→  截图
+你（Telegram）→  看一眼现在的屏幕
+你（Telegram）→  current pane
+```
+
+Bot 回一张 PNG，文字、diff 红绿底色、box-drawing 都清晰可见。`cct-slash` 与 `cct-snapshot` 都强制要求 Claude 本身跑在 tmux 内，否则拒绝。
 
 ## 快速开始
 
