@@ -25,6 +25,7 @@
       "Skill(claude-md-management:revise-claude-md)",
       "Skill(cct-telegram)",
       "Skill(cct-slash)",
+      "Skill(cct-snapshot)",
       "Read(./**)",
       "Write(./**)",
       "Edit(./**)",

@@ -22,31 +22,18 @@ allowed-tools: [Bash, Read, Write]
 `TELEGRAM_STATE_DIR` 必须指向**当前工作区**的 `.claude/channels/telegram/` 目录，写入
 `.claude/settings.local.json`（gitignored），**绝不修改全局 `~/.claude/settings.json`**。
 同一台机器可并行运行多个工作区，每个工作区独立 Bot Token 和 `access.json`，互不干扰。
-`setup.sh` 已封装好这个逻辑，直接调用，不要手写路径。
 
-### 全局一次性（每台机器只做一次）
+**前提**：`telegram@claude-plugins-official` 已全局安装（`/plugin install telegram@claude-plugins-official` + `/reload-plugins`）。不确定时询问用户，已安装则跳过。
 
-告知用户在 Claude Code 终端手动执行，**不要自动执行**：
+### 步骤
 
-```
-/plugin install telegram@claude-plugins-official
-/reload-plugins
-```
+**步骤 1 — 获取 Token**
 
-`/plugins` 确认列表中出现 `telegram@claude-plugins-official` 后退出会话。
+用户在 Telegram 搜索 `@BotFather`，发送 `/newbot`，复制返回的 Token（格式：`123456789:AAF...`）。
 
-### 每工作区独立步骤
+**步骤 2 — 写入配置**（直接执行，无需用户手动操作）
 
-**步骤 1 — BotFather 申请 Token**
-
-用户在 Telegram 中搜索 `@BotFather`，发送 `/newbot`，填写名称和用户名（须以 `bot` 结尾），
-复制返回的 Bot Token（格式：`123456789:AAF...`）。
-
-**步骤 2 — 初始化工作区**
-
-询问用户 Bot Token，然后直接执行：
-
-1. 确认工作区根目录的绝对路径：
+1. 确认工作区绝对路径：
 ```bash
 pwd
 ```
@@ -55,10 +42,10 @@ pwd
 ```bash
 mkdir -p .claude/channels/telegram
 install -m 600 /dev/null .claude/channels/telegram/.env
-echo "TELEGRAM_BOT_TOKEN=<用户提供的token>" > .claude/channels/telegram/.env
+echo "TELEGRAM_BOT_TOKEN=<token>" > .claude/channels/telegram/.env
 ```
 
-3. 写入 `settings.local.json`（`TELEGRAM_STATE_DIR` 用上一步确认的绝对路径）：
+3. 写入 `settings.local.json`：
 ```bash
 cat > .claude/settings.local.json <<EOF
 {
@@ -69,31 +56,33 @@ cat > .claude/settings.local.json <<EOF
 EOF
 ```
 
-4. 验证：
+4. 验证两个文件内容正确。
+
+**步骤 3 — 自动启动 Bot**
+
+检查是否已有 Bot 在运行：
 ```bash
-cat .claude/channels/telegram/.env      # 应含 TELEGRAM_BOT_TOKEN=...
-cat .claude/settings.local.json         # TELEGRAM_STATE_DIR 须指向本工作区，不是 ~/.claude/
+tmux ls 2>/dev/null
 ```
 
-**步骤 3 — 启动**
-
+取工作区目录名作为 session 名（如 `claude-telegram-workspace`），若对应 session 不存在则创建：
 ```bash
-tmux new -s <工作区名>
-# tmux 内：
-claude --channels plugin:telegram@claude-plugins-official
+tmux new-session -d -s <session名> && tmux send-keys -t <session名> "cd <工作区路径> && claude --channels plugin:telegram@claude-plugins-official" Enter
 ```
 
-**步骤 4 — 首次配对**
+**步骤 4 — 引导配对**
 
-在 Telegram 向 Bot 发任意消息，终端会输出 6 位配对码。用户在 Claude 会话中输入
-`pair <6位码>` 后，直接执行场景二的配对流程，无需额外提示。
+Bot 启动后，告知用户：
+> Bot 已在后台启动。请在 Telegram 向 Bot 发送任意消息，等待片刻后回来把 **6 位配对码**告诉我（输入 `pair <码>`）。
+
+然后等待用户输入配对码，触发场景二。
 
 ### 故障排查
 
 | 症状 | 检查点 |
 |------|--------|
 | Bot 无响应 | `cat .claude/settings.local.json` 确认 TELEGRAM_STATE_DIR 指向本工作区 |
-| 配对码不出现 | 确认启动命令含 `--channels plugin:telegram@claude-plugins-official` |
+| 配对码不出现 | 确认 tmux session 内命令含 `--channels plugin:telegram@claude-plugins-official` |
 | 多工作区 Token 互串 | 每个工作区必须有独立的 `settings.local.json`，路径各自不同 |
 
 ---

@@ -1,106 +1,62 @@
 ---
 name: cct-slash
 description: |
-  Execute Claude Code slash commands in any running tmux session — from Telegram, another Claude session, or the CLI. Use this skill whenever someone asks to run a slash command (/clear, /compact, /memory, /new, /review, /help, etc.) in a specific tmux session, or says "send /X to [session]", "execute /X in [session]", "在 [session] 里执行 /X", or "run /X on the [session] claude". Also triggers for broadcast requests like "在所有 session 执行 /memory". Sends keystrokes via tmux send-keys to the target session's active pane.
+  Send a Claude Code slash command to the current tmux pane. Use when someone says
+  "/clear", "/compact", "/memory", "/new ...", "/review", "/help", "send /X", "execute
+  /X here", "在当前 session 执行 /X", or pastes any slash command for the same Claude
+  to run. ONLY works when the calling Claude is itself running inside tmux — refuses
+  otherwise.
 allowed-tools: [Bash]
 ---
 
 # cct-slash
 
-Send any Claude Code slash command to a running tmux session. The target session must already have Claude Code running in its active pane.
+Forwards a Claude Code slash command to the **current** tmux pane via `tmux send-keys`.
+All logic lives in `scripts/cct_slash.py`; this skill is a thin trigger.
 
-## Steps
-
-### 1. Discover sessions
-
-```bash
-tmux list-sessions
-```
-
-Match the user's stated session against this live list:
-
-| User says | Resolution |
-|---|---|
-| Exact name | Use it directly |
-| Partial name | Pick the session whose name contains the string |
-| "all sessions" / "所有 session" | Collect every session |
-| Nothing specified | Print the list and ask which session |
-
-### 2. Validate
+## Run
 
 ```bash
-tmux has-session -t <name>
+python3 .claude/skills/cct-slash/scripts/cct_slash.py "<slash-command>"
 ```
 
-If the session doesn't exist, report the error and stop.
+Pass the full slash command as one argument — including arguments, e.g.
+`"/new build a payment service"`. The script handles the literal-key send and the
+post-send pane capture.
 
-### 3. Announce
+## Output
 
-Before sending, tell the user (and reply via Telegram if that's where the request came from):
+Success — JSON on stdout:
 
-> 准备向 `<session-name>` 发送 `<slash-command>`…
-
-### 4. Send the slash command
-
-For **each** target session:
-
-```bash
-# Send the text literally — no tmux key interpretation
-tmux send-keys -t <session-name> -l -- "<slash-command>"
-# Submit
-tmux send-keys -t <session-name> Enter
+```json
+{"ok": true, "session": "ws-a", "pane": "%17", "sent": "/clear"}
 ```
 
-If the slash command has arguments (e.g. `/new build a payment service`), pass the full string as one literal send.
+Failure — JSON on stderr, non-zero exit. Most common case:
 
-### 5. Capture and confirm
-
-Wait ~1 second, then capture the tail of the pane:
-
-```bash
-sleep 1
-tmux capture-pane -t <session-name> -p | tail -20
+```json
+{"ok": false, "error": "当前 Claude 进程不在 tmux 内（$TMUX 或 $TMUX_PANE 未设置）。..."}
 ```
 
-Read the output:
-- If it shows the command was received (prompt changed, Claude is responding, or the command echoed) → success
-- If the pane looks unchanged → mention it may have been buffered (Claude was busy) or warn the user
-- If the pane doesn't look like a Claude Code prompt (looks like a shell) → warn the user the session may not be running Claude Code
+The script intentionally does NOT capture the pane after sending: when the bot's
+own Claude is the target pane, it cannot process the keystroke until this skill
+returns, so any captured tail would just show the echoed command, not the response.
+Use `cct-snapshot` afterwards if the user wants to see the new pane state.
 
-### 6. Report
+## Refuse path
 
-Summarise what happened for each session. If the request came via Telegram, send the result back with `mcp__plugin_telegram_telegram__reply`.
+If the error mentions `不在 tmux 内`, do NOT retry from outside tmux. Reply to the
+user (via Telegram if that's the source):
 
----
+> 当前 Claude 不在 tmux 中，无法转发 slash 命令。请先在终端执行 `tmux new -s ws` 启动 Claude 再重试。
 
-## Broadcast mode
+Note: send this as plain `text` format — do NOT HTML-encode any characters.
 
-When sending to multiple sessions, loop sequentially:
+## Reporting back via Telegram
 
-```bash
-for session in <list>; do
-  tmux send-keys -t "$session" -l -- "<slash-command>"
-  tmux send-keys -t "$session" Enter
-  sleep 0.5
-  echo "=== $session ===" 
-  tmux capture-pane -t "$session" -p | tail -10
-done
-```
+After a successful send, reply briefly with `mcp__plugin_telegram_telegram__reply`:
 
-Report each session's result individually.
+> ✓ 已向 `<session>` 发送 `<command>`。
 
----
-
-## Quick example
-
-User (via Telegram): "在 myproject 里执行 /clear"
-
-```bash
-tmux list-sessions          # confirms myproject exists
-tmux send-keys -t myproject -l -- "/clear"
-tmux send-keys -t myproject Enter
-sleep 1
-tmux capture-pane -t myproject -p | tail -20
-```
-
-Reply: "✓ 已向 `myproject` 发送 `/clear`，Claude Code 已收到指令。"
+If the user also wants to see the resulting pane, follow up by invoking
+`cct-snapshot` and attaching the PNG.
