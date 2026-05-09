@@ -44,18 +44,32 @@ allowed-tools: [Bash, Read, Write]
 
 **步骤 2 — 初始化工作区**
 
-在工作区根目录执行：
+询问用户 Bot Token，然后直接执行：
 
+1. 确认工作区根目录的绝对路径：
 ```bash
-bash .claude/skills/cct-telegram/scripts/setup.sh
+pwd
 ```
 
-脚本交互式要求输入 Token，自动完成：
-1. Token 写入 `.claude/channels/telegram/.env`（权限 600，gitignored）
-2. `TELEGRAM_STATE_DIR` 写入 `.claude/settings.local.json`（gitignored）
+2. 写入 Token（权限 600）：
+```bash
+mkdir -p .claude/channels/telegram
+install -m 600 /dev/null .claude/channels/telegram/.env
+echo "TELEGRAM_BOT_TOKEN=<用户提供的token>" > .claude/channels/telegram/.env
+```
 
-验证：
+3. 写入 `settings.local.json`（`TELEGRAM_STATE_DIR` 用上一步确认的绝对路径）：
+```bash
+cat > .claude/settings.local.json <<EOF
+{
+  "env": {
+    "TELEGRAM_STATE_DIR": "<pwd结果>/.claude/channels/telegram"
+  }
+}
+EOF
+```
 
+4. 验证：
 ```bash
 cat .claude/channels/telegram/.env      # 应含 TELEGRAM_BOT_TOKEN=...
 cat .claude/settings.local.json         # TELEGRAM_STATE_DIR 须指向本工作区，不是 ~/.claude/
