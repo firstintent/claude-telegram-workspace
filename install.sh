@@ -12,7 +12,8 @@ TELEGRAM_PERMS='[
   "mcp__plugin_telegram_telegram__react",
   "mcp__plugin_telegram_telegram__edit_message",
   "mcp__plugin_telegram_telegram__download_attachment",
-  "Skill(cct-telegram)",
+  "Skill(telegram:configure)",
+  "Skill(telegram:access)",
   "Skill(cct-slash)",
   "Skill(cct-snapshot)",
   "Read(./.claude/channels/**)"
@@ -23,7 +24,7 @@ git clone --depth 1 --quiet "$REPO" "$TMP/template"
 
 echo "→ Installing skills..."
 mkdir -p "$TARGET/.claude/skills"
-for skill in cct-telegram cct-slash cct-snapshot telegram-access; do
+for skill in telegram-configure telegram-access cct-slash cct-snapshot; do
     src="$TMP/template/.claude/skills/$skill"
     [ -d "$src" ] && cp -r "$src" "$TARGET/.claude/skills/" && echo "  ✓ $skill"
 done
@@ -63,7 +64,7 @@ else
     echo "  ⚠ jq not found — please add manually to .claude/settings.local.json:"
     echo '    "enabledPlugins": { "telegram@claude-plugins-official": true }'
     echo "    permissions.allow: mcp__plugin_telegram_telegram__reply/react/edit_message/download_attachment"
-    echo "                       Skill(cct-telegram) Skill(cct-slash) Skill(cct-snapshot)"
+    echo "                       Skill(telegram:configure) Skill(telegram:access) Skill(cct-slash) Skill(cct-snapshot)"
 fi
 
 echo "→ Updating .gitignore..."

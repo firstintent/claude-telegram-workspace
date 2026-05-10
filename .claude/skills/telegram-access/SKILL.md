@@ -14,8 +14,6 @@ allowed-tools: [Bash, Read, Write]
 
 ## pair <code>
 
-直接执行 `cct-telegram` 场景二的配对流程：
-
 **1. 读取 access.json**
 
 ```
